@@ -56,16 +56,16 @@ class XiaomiVacuumCard extends Polymer.Element {
             <template is="dom-if" if="{{showLabels}}">
               <div class="content grid" style="[[contentStyle]]" on-click="moreInfo">
                 <div class="grid-content grid-left">
-                  <div>[[getValue('status')]]</div>
-                  <div>[[getValue('battery', ' %')]]</div>
-                  <div>[[getValue('mode')]]</div>
+                  <div>[[getValue(stateObj, 'status')]]</div>
+                  <div>[[getValue(stateObj, 'battery', ' %')]]</div>
+                  <div>[[getValue(stateObj, 'mode')]]</div>
                 </div>
                 <template is="dom-if" if="{{showDetails}}">
                   <div class="grid-content grid-right" >
-                    <div>[[computeValue('main_brush')]]</div>
-                    <div>[[computeValue('side_brush')]]</div>
-                    <div>[[computeValue('filter')]]</div>
-                    <div>[[computeValue('sensor')]]</div>
+                    <div>[[computeValue(stateObj, 'main_brush')]]</div>
+                    <div>[[computeValue(stateObj, 'side_brush')]]</div>
+                    <div>[[computeValue(stateObj, 'filter')]]</div>
+                    <div>[[computeValue(stateObj, 'sensor')]]</div>
                   </div>
                 </template>
               </div>
@@ -246,14 +246,14 @@ class XiaomiVacuumCard extends Polymer.Element {
         config.attributes = Object.assign({}, attributes, vendor.attributes, config.attributes);
         config.labels = Object.assign({}, labels, config.labels);
 
-        this.getValue = (field, unit = '') => {
+        this.getValue = (stateObj, field, unit = '') => {
             const value = (this.stateObj && config.attributes[field] in this.stateObj.attributes)
                 ? this.stateObj.attributes[config.attributes[field]] + unit
                 : (this._hass ? this._hass.localize('state.default.unavailable') : 'Unavailable');
             return `${config.labels[field]}: ${value}`;
         };
 
-        this.computeValue = field => {
+        this.computeValue = (stateObj, field) => {
             if (this.stateObj && config.attributes[field] in this.stateObj.attributes) {
                 const value = this.stateObj.attributes[config.attributes[field]];
                 return `${config.labels[field]}: ${vendor.computeValue ? vendor.computeValue(value) : value} ${config.labels.hours}`;
